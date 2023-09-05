@@ -165,7 +165,7 @@
 							</li>
 						{% endif %}
 						{% for page in products.paginator.page_range %}
-							{% if products.number|add:'-1' <= page and page <= products.number|add:'1' %}
+							{% if products.number|add:'-1' <= page <= products.number|add:'1' %}
 								{% if page == products.number %}
 									<li class="page-item active">
 										<a class="page-link" href="{% url 'store' %}?page={{ page }}">{{ page }}</a>
