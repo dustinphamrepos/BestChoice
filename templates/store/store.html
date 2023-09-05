@@ -115,6 +115,12 @@
 				<!-- card.// -->
 			</aside>
       <main class="col-md-9">
+				<header class="border-bottom mb-4 pb-3">
+					<div class="form-inline">
+						<span class="mr-md-auto">Found <b>{{ product_count }}</b> Items found
+						</span>
+					</div>
+				</header>
         <div class="row">
           {% for product in products %}
           <div class="col-md-4">
@@ -134,6 +140,67 @@
           </div>
           {% endfor %}
         </div>
+				{% if products %}
+				<nav class="mt-4" aria-label="Page navigation sample">
+					<ul class="pagination">
+						{% if products.has_previous %}
+							<li class="page-item">
+								<a class="page-link" href="{% url 'store' %}?page=1">First</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link"
+									href="{% url 'store' %}?page={{products.previous_page_number}}">Previous</a>
+							</li>
+						{% else %}
+							<li class="page-item disabled">
+								<a class="page-link" href="#">First</a>
+							</li>
+							<li class="page-item disabled">
+								<a class="page-link" href="#">Previous</a>
+							</li>
+						{% endif %}
+						{% if products.number|add:'-2' >= 1 %}
+							<li class="page-item">
+								<a class="page-link" href="{% url 'store' %}?page={{ products.number|add:'-2' }}">&hellip;</a>
+							</li>
+						{% endif %}
+						{% for page in products.paginator.page_range %}
+							{% if products.number|add:'-1' <= page and page <= products.number|add:'1' %}
+								{% if page == products.number %}
+									<li class="page-item active">
+										<a class="page-link" href="{% url 'store' %}?page={{ page }}">{{ page }}</a>
+									</li>
+								{% else %}
+									<li class="page-item">
+										<a class="page-link" href="{% url 'store' %}?page={{ page }}">{{ page }}</a>
+									</li>
+								{% endif %}
+							{% endif %}
+						{% endfor %}
+						{% if products.number|add:'2' <= products.paginator.num_pages %}
+							<li class="page-item">
+								<a class="page-link" href="{% url 'store' %}?page={{ products.number|add:'2' }}">&hellip;</a>
+							</li>
+						{% endif %}
+						{% if products.has_next %}
+							<li class="page-item">
+								<a class="page-link" href="{% url 'store' %}?page={{products.next_page_number}}">Next</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link"
+									href="{% url 'store' %}?page={{ products.paginator.num_pages }}">Last</a>
+							</li>
+						{% else %}
+							<li class="page-item disabled">
+								<a class="page-link" href="#">Next</a>
+							</li>
+							<li class="page-item disabled">
+								<a class="page-link" href="#">Last</a>
+							</li>
+						{% endif %}
+					</ul>
+				</nav>
+				{% endif %}
       </main>
     </div>
   </div>
