@@ -1,5 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from carts.models import Cart, CartItem
 from store.models import Product, Variation
 
@@ -9,6 +9,28 @@ def _cart_id(request):
   if not cart_id:
     cart_id  = request.session.create()
   return cart_id
+
+def cart(request, total=0, quantity=0, cart_items=None):
+  try:
+    cart = Cart.objects.get(cart_id=_cart_id(request=request))
+    cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+    for cart_item in cart_items:
+      total += cart_item.product.price * cart_item.quantity
+      quantity += cart_item.quantity
+    tax = total * 2 / 100
+    grand_total = total + tax
+  except ObjectDoesNotExist:
+    pass
+
+  context = {
+    'total': total,
+    'quantity': quantity,
+    'cart_items': cart_items,
+    'tax': tax if 'tax' in locals() else "",
+    'grand_total': grand_total if 'tax' in locals() else 0
+  }
+
+  return render(request, 'store/cart.html', context=context)
 
 def add_cart(request, product_id):
   product = Product.objects.get(id=product_id)
@@ -48,28 +70,31 @@ def add_cart(request, product_id):
       cart_item.variations.add(item)
   cart_item.save()
   return redirect('cart')
-    
 
-def cart(request, total=0, quantity=0, cart_items=None):
+def remove_cart_one_item(request, product_id, cart_item_id):
+  product = get_object_or_404(Product, id=product_id)
+  try:
+    cart = Cart.objects.get(cart_id=_cart_id(request))
+    cart_item = CartItem.objects.get(id=cart_item_id, product=product, cart=cart)
+    
+    if cart_item.quantity > 1:
+      cart_item.quantity -= 1
+      cart_item.save()
+    else:
+      cart_item.delete()
+  except Exception:
+    pass
+  return redirect('cart')
+
+def remove_cart_all_item(request, product_id, cart_item_id):
+  product = get_object_or_404(Product, id=product_id)
   try:
     cart = Cart.objects.get(cart_id=_cart_id(request=request))
-    cart_items = CartItem.objects.filter(cart=cart, is_active=True)
-    for cart_item in cart_items:
-      total += cart_item.product.price * cart_item.quantity
-      quantity += cart_item.quantity
-    tax = total * 2 / 100
-    grand_total = total + tax
-  except ObjectDoesNotExist:
+    cart_item = CartItem.objects.get(id=cart_item_id, product=product, cart=cart)
+    cart_item.delete()
+  except Exception:
     pass
+  return redirect('cart')
+    
 
-  context = {
-    'total': total,
-    'quantity': quantity,
-    'cart_items': cart_items,
-    'tax': tax if 'tax' in locals() else "",
-    'grand_total': grand_total if 'tax' in locals() else 0
-  }
 
-  return render(request, 'store/cart.html', context=context)
-
-  
