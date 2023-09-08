@@ -19,6 +19,7 @@ def register(request):
       user = Account.objects.create_user(first_name=first_name, last_name=last_name, email=email, username=username, password=password)
       user.phone_number = phone_number
       user.save()
+      messages.success(request=request, message="Register succeed!")
       return redirect('register')
     else:
       messages.error(request=request, message="Register failed!")
