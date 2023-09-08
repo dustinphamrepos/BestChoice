@@ -5,7 +5,7 @@ from carts.views import _cart_id
 from carts.models import Cart, CartItem
 
 from category.models import Category
-from store.models import Product
+from .models import Product
 
 
 def store(request, category_slug=None):
