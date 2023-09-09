@@ -81,10 +81,15 @@ def login(request):
 
   return render(request, 'accounts/login.html', context=context)
 
-@login_required(login_url="login")
+@login_required(login_url='login')
 def logout(request):
   auth.logout(request)
   messages.success(request=request, message='You are logged out.')
   return redirect('home')
 
+@login_required(login_url='login')
+def account(request):
+  user = request.user
+  context = {'user': user}
+  return render(request, 'accounts/account.html', context=context)
 

@@ -22,7 +22,8 @@
                         <div class="widget-header">
                             <small class="title text-muted">Welcome guest!</small>
                             <div>
-                                <a href="{% url 'login' %}">Log in</a> <span class="dark-transp"> | </span>
+                                <a href="{% url 'login' %}">Log in</a>
+                                <span class="dark-transp"> | </span>
                                 <a href="{% url 'register' %}"> Register</a>
                             </div>
                         </div>
@@ -30,6 +31,8 @@
                         <div class="widget-header">
                             <small class="title text-muted">Welcome {{ user.first_name }} {{ user.last_name }}!</small>
                             <div>
+                                <a href="{% url 'account' %}">Account</a>
+                                <span class="dark-transp"> | </span>
                                 <a href="{% url 'logout' %}">Logout</a>
                             </div>
                         </div>
