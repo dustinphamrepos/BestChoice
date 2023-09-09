@@ -1,6 +1,7 @@
 
 from django.shortcuts import redirect, render
 from django.contrib import messages, auth
+from django.contrib.auth.decorators import login_required
 from carts.models import Cart, CartItem
 from carts.views import _cart_id
 from .models import Account
@@ -79,4 +80,11 @@ def login(request):
   }
 
   return render(request, 'accounts/login.html', context=context)
+
+@login_required(login_url="login")
+def logout(request):
+  auth.logout(request)
+  messages.success(request=request, message='You are logged out.')
+  return redirect('home')
+
 
