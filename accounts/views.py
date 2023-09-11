@@ -23,7 +23,7 @@ def register(request):
       user.phone_number = phone_number
       user.save()
       messages.success(request=request, message="Register succeed!")
-      return redirect('register')
+      return redirect('login')
     else:
       messages.error(request=request, message="Register failed!")
   else:
