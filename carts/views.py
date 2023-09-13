@@ -1,5 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.decorators import login_required
+
 from carts.models import Cart, CartItem
 from store.models import Product, Variation
 
@@ -122,6 +124,37 @@ def remove_cart_all_item(request, product_id, cart_item_id):
   except Exception:
     pass
   return redirect('cart')
+
+@login_required(login_url='login')
+def checkout(request, total=0, quantity=0, cart_items=None):
+  current_user = request.user
+
+  if current_user.phone_number:
+    phone_number = current_user.phone_number
+  else:
+    phone_number = ''
+
+  try:
+    cart_items = CartItem.objects.filter(user=request.user, is_active=True)
+    for cart_item in cart_items:
+      total += cart_item.product.price * cart_item.quantity
+      quantity += cart_item.quantity
+    tax = total * 2 / 100
+    grand_total = total + tax
+  except ObjectDoesNotExist:
+    pass
+
+  context = {
+    'current_user': current_user,
+    'phone_number': phone_number,
+    'total': total,
+    'quantity': quantity,
+    'cart_items': cart_items,
+    'tax': tax if 'tax' in locals() else '',
+    'grand_total': grand_total
+  }
+
+  return render(request, 'store/checkout.html', context=context)
     
 
 
