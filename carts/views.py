@@ -1,6 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
+from orders.models import Address
 
 from carts.models import Cart, CartItem
 from store.models import Product, Variation
@@ -144,6 +145,8 @@ def checkout(request, total=0, quantity=0, cart_items=None):
   except ObjectDoesNotExist:
     pass
 
+  list_address = Address.objects.filter(user=current_user)
+
   context = {
     'current_user': current_user,
     'phone_number': phone_number,
@@ -151,7 +154,8 @@ def checkout(request, total=0, quantity=0, cart_items=None):
     'quantity': quantity,
     'cart_items': cart_items,
     'tax': tax if 'tax' in locals() else '',
-    'grand_total': grand_total
+    'grand_total': grand_total,
+    'list_address': list_address if 'list_address' in locals() else ""
   }
 
   return render(request, 'store/checkout.html', context=context)

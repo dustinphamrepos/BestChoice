@@ -3,11 +3,11 @@ from django.shortcuts import redirect, render
 from store.models import Product
 
 from carts.models import CartItem
-from orders.models import Order, OrderProduct
+from orders.models import Order, OrderProduct, Address
 from .forms import OrderForm
 
 # Create your views here.
-def place_order(request, total=0, quantity=0):
+def place_order(request, total=0, quantity=0, id_address=None):
   current_user = request.user
 
   cart_items = CartItem.objects.filter(user=current_user)
@@ -24,44 +24,44 @@ def place_order(request, total=0, quantity=0):
   tax = (2*total)/100
   grand_total = total + tax
 
+  selected_address = Address.objects.get(user=current_user, id=id_address)
+
   if request.method == 'POST':
-    form = OrderForm(request.POST)
-    if form.is_valid():
-      data = Order()
-      data.user = current_user
-      data.first_name = form.cleaned_data['first_name']
-      data.last_name = form.cleaned_data['last_name']
-      data.phone_number = form.cleaned_data['phone_number']
-      data.email = form.cleaned_data['email']
-      data.city = form.cleaned_data['city']
-      data.district = form.cleaned_data['district']
-      data.precinct = form.cleaned_data['precinct']
-      data.address_detail = form.cleaned_data['address_detail']
-      data.order_note = form.cleaned_data['order_note']
-      data.order_total = grand_total
-      data.tax = tax
-      data.ip = request.META.get('REMOTE_ADDR')
-      data.is_ordered = False
-      data.save()
+    data = Order()
+    data.user = current_user
+    data.first_name = selected_address.first_name
+    data.last_name = selected_address.last_name
+    data.phone_number = selected_address.phone_number
+    data.email = selected_address.email
+    data.city = selected_address.city
+    data.district = selected_address.district
+    data.precinct = selected_address.precinct
+    data.address_detail = selected_address.address_detail
+    data.order_note = request.POST.get('order_note')
+    data.order_total = grand_total
+    data.tax = tax
+    data.ip = request.META.get('REMOTE_ADDR')
+    data.is_ordered = False
+    data.save()
 
-      year = int(datetime.date.today().strftime('%Y'))
-      day = int(datetime.date.today().strftime('%d'))
-      month = int(datetime.date.today().strftime('%m'))
-      date = datetime.date(year, month, day)
-      current_date = date.strftime("%Y%m%d")
-      order_number = current_date + str(data.id)
-      data.order_number = order_number
-      data.save()
+    year = int(datetime.date.today().strftime('%Y'))
+    day = int(datetime.date.today().strftime('%d'))
+    month = int(datetime.date.today().strftime('%m'))
+    date = datetime.date(year, month, day)
+    current_date = date.strftime("%Y%m%d")
+    order_number = current_date + str(data.id)
+    data.order_number = order_number
+    data.save()
 
-      order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
-      context = {
-        'order': order,
-        'cart_items': cart_items,
-        'total': total,
-        'tax': tax,
-        'grand_total': grand_total,
-      }
-      return render(request, 'orders/order.html', context=context)
+    order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
+    context = {
+      'order': order,
+      'cart_items': cart_items,
+      'total': total,
+      'tax': tax,
+      'grand_total': grand_total,
+    }
+    return render(request, 'orders/order.html', context=context)
   else:
     return redirect('checkout')
 

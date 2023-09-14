@@ -189,3 +189,9 @@ def account_address(request):
   }
 
   return render(request, 'accounts/account_address.html', context=context)
+
+def account_delete_address(request, id):
+  address = Address.objects.get(id=id)
+  address.delete()
+  return redirect('account_address')
+  

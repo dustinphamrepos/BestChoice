@@ -67,16 +67,23 @@
                         <div class="card">
                             <h5 class="card-header">{{ address.full_name}} - {{ address.phone_number }}</h5>
                             <div class="card-body">
-                                <p class="card-text">{{ address.full_address }}
+                                <p class="card-text">
+                                    {{ address.full_address }}
                                 </p>
-                                <button type="button" class="btn btn-warning">Edit</button>
-                                &nbsp;
-                                &nbsp;
-                                <button type="button" class="btn btn-danger">Delete</button>
+                                <p class="text-right">
+                                    <button type="button" class="btn btn-warning">Edit</button>
+                                    &nbsp;
+                                    <a href="{% url 'account_delete_address' address.id %}">
+                                        <button type="button" class="btn btn-danger">Delete</button>
+                                    </a>
+                                </p>
                             </div>
                         </div>
                         <br />
                     {% endfor %}
+                    <div class="text-right">
+                        <a href="{% url 'checkout' %}" class="btn btn-info">>> Continue checkout</a>
+                    </div>
             </main>
         </div>
     </div>
