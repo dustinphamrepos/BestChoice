@@ -5,6 +5,7 @@
 <section class="section-intro padding-y-sm">
     <div class="container">
         <div class="intro-banner-wrap">
+            {% include "includes/alerts.html" %}
             <img src="{% static 'images/banners/cover.jpeg' %}" width="100%" class="img-fluid rounded">
         </div>
 
@@ -22,6 +23,7 @@
                 <div class="card card-product-grid">
                     <a href="{{ product.get_url }}" class="img-wrap"> <img src="{{ product.images.url }}"> </a>
                     <figcaption class="info-wrap">
+                        <a href="{{ product.get_url }}" class="title">{{ product.product_name }}</a>
                         <div class="price mt-1">${{ product.price }}</div>
                     </figcaption>
                 </div>

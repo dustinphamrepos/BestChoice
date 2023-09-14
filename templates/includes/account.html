@@ -1,0 +1,70 @@
+{% load static %}
+
+<ul class="list-group">
+  {% if active == 'info' %}
+    <a class="list-group-item active" href="{% url 'account_info' %}">
+      <i class="fa-solid fa-circle-info"></i>
+      &nbsp;
+      My information
+    </a>
+  {% else %}
+    <a class="list-group-item" href="{% url 'account_info' %}">
+      <i class="fa-solid fa-circle-info"></i>
+      &nbsp;
+      My information
+    </a>
+  {% endif %}
+  {% if active == 'address' %}
+    <a class="list-group-item active" href="{% url 'account_address' %}">
+      <i class="fa-solid fa-book"></i>
+      &nbsp;
+      List address 
+    </a>
+  {% else %}
+    <a class="list-group-item" href="{% url 'account_address' %}">
+      <i class="fa-solid fa-book"></i>
+      &nbsp;
+      List address 
+    </a>
+  {% endif %}
+  <a class="list-group-item" href="#">
+    <i class="fa-solid fa-book"></i>
+    &nbsp;
+    Wait for confirmation
+  </a>
+  <a class="list-group-item" href="#">
+    <i class="fa-solid fa-box"></i>
+    &nbsp;
+    Waiting for delivery
+  </a>
+  <a class="list-group-item" href="#">
+    <i class="fa-solid fa-truck"></i>
+    &nbsp;
+    Delivering
+  </a>
+  <a class="list-group-item" href="#">
+    <i class="fa-solid fa-hand-holding-hand"></i>
+    &nbsp;
+    Delivered
+  </a>
+  <a class="list-group-item" href="#">
+    <i class="fa-solid fa-ban"></i>
+    &nbsp;
+    Canceled
+  </a>
+  <a class="list-group-item" href="#">
+    <i class="fa-solid fa-gear"></i>
+    &nbsp;
+    Settings
+  </a>
+</ul>
+<br>
+<a class="btn btn-light btn-block" href="{% url 'change_password' %}">
+<i class="fa-solid fa-pencil"></i>
+<span class="text">Change password</span>
+</a>
+<br>
+<a class="btn btn-light btn-block" href="{% url 'logout' %}">
+<i class="fa fa-power-off"></i>
+<span class="text">Log out</span>
+</a>

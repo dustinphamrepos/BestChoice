@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="section-conten padding-y bg">
+    <div class="container">
+        {% include "includes/alerts.html" %}
+        <div class="row">
+            <aside class="col-md-4">
+                {% include "includes/account.html" %}
+            </aside>
+            <main class="col-md-8">
+                <article class="card">
+                    <table class="table">
+                        <tbody>
+                          <tr>
+                            <td scope="row">First name:</td>
+                            <th>{{ user.first_name }}</th>
+                          </tr>
+                          <tr>
+                            <td scope="row">Last name:</td>
+                            <th>{{ user.last_name }}</th>
+                          </tr>
+                          <tr>
+                            <td scope="row"> Username:</td>
+                            <th>{{ user.username }}</th>
+                          </tr>
+                          <tr>
+                            <td scope="row">Email:</td>
+                            <th>{{ user.email }}</th>
+                          </tr>
+                          <tr>
+                            <td scope="row">Phone number:</td>
+                            {% if user.phone_number %}
+                                <th>{{ user.phone_number }}</th>
+                            {% else %}
+                                <td> + Add phone number </td>
+                            {% endif %}
+                          </tr>
+                        </tbody>
+                      </table>
+                </article>
+                <br />
+                <a class="btn btn-light btn-block" href="{% url 'change_information' %}">
+                  <i class="fa-solid fa-pencil"></i>
+                  <span class="text">Change information</span>
+                </a>
+            </main>
+        </div>
+    </div>
+
+
+</section>
+{% endblock %}

@@ -2,6 +2,8 @@
 from django.shortcuts import redirect, render
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
+from orders.forms import AddressForm
+from orders.models import Address
 from carts.models import Cart, CartItem
 from carts.views import _cart_id
 from .models import Account
@@ -88,10 +90,14 @@ def logout(request):
   return redirect('home')
 
 @login_required(login_url='login')
-def account(request):
+def account_info(request):
   user = request.user
-  context = {'user': user}
-  return render(request, 'accounts/account.html', context=context)
+  active = 'info'
+  context = {
+    'user': user,
+    'active': active
+  }
+  return render(request, 'accounts/account_info.html', context=context)
 
 @login_required(login_url='login')
 def change_password(request):
@@ -104,7 +110,7 @@ def change_password(request):
       user.set_password(password)
       user.save()
       messages.success(request, message='Password changed successfully.')
-      return redirect('account')
+      return redirect('account_info')
     else:
       messages.error(request, message='Password do not match.')
   return render(request, 'accounts/change_password.html')
@@ -130,7 +136,7 @@ def change_information(request):
     user.phone_number = phone_number
     user.save()
     messages.success(request, message='Information changed successfully.')
-    return redirect('account')
+    return redirect('account_info')
   
   context = {
     'old_first_name': old_first_name,
@@ -140,3 +146,46 @@ def change_information(request):
     'old_phone_number': old_phone_number,
   }
   return render(request, 'accounts/change_information.html', context=context)
+  
+def account_address(request):
+  current_user = request.user
+  active = 'address'
+  list_address = Address.objects.filter(user=current_user)
+
+  if list_address:
+    list_address = list_address
+  else:
+    pass
+
+  if request.method == 'POST':
+    form = AddressForm(request.POST)
+    if form.is_valid():
+      address = Address()
+      address.user = current_user
+      address.first_name = form.cleaned_data['first_name']
+      address.last_name = form.cleaned_data['last_name']
+      address.phone_number = form.cleaned_data['phone_number']
+      address.email = form.cleaned_data['email']
+      address.city = form.cleaned_data['city']
+      address.district = form.cleaned_data['district']
+      address.precinct = form.cleaned_data['precinct']
+      address.address_detail = form.cleaned_data['address_detail']
+      
+      address.save()
+
+      messages.success(request=request, message='Saved!')
+
+      return redirect('account_address')
+    else:
+      messages.error(request=request, message="Save failed!")
+
+  else:
+    form = AddressForm()
+
+  context = {
+    'form': form,
+    'list_address': list_address,
+    'active': active
+  }
+
+  return render(request, 'accounts/account_address.html', context=context)

@@ -55,3 +55,28 @@ class OrderProduct(models.Model):
 
   def __str__(self):
     return self.product.product_name
+  
+class Address(models.Model):
+  user = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
+  order_number = models.CharField(max_length=20)
+  first_name = models.CharField(max_length=50)
+  last_name = models.CharField(max_length=50)
+  phone_number = models.CharField(max_length=15)
+  email = models.EmailField(max_length=50)
+  city = models.CharField(max_length=50)
+  district = models.CharField(max_length=50)
+  precinct = models.CharField(max_length=60)
+  address_detail = models.CharField(max_length=100)
+  created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)
+
+  def full_name(self):
+    return "{} {}".format(self.first_name, self.last_name)
+  
+  def full_address(self):
+    return "N. {}, {} district, {} precinct, {} city.".format(self.address_detail, self.precinct, self.district, self.city)
+
+  def __str__(self):
+    return "{} {} - {} {} {} {}".format(self.first_name, self.last_name, self.address_detail, self.precinct, self.district, self.city)
+
+
