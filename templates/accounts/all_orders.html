@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="section-conten padding-y bg">
+    <div class="container">
+        {% include "includes/alerts.html" %}
+        <div class="row">
+            <aside class="col-md-4">
+                {% include "includes/account.html" %}
+            </aside>
+            <main class="col-md-8">
+              {% if all_orders %}
+              {% for order in all_orders %}
+                <article class="card">
+                    <div class="card-header">
+                      <b>#{{ order.order_number }}</b>
+                      <a href="{% url 'order_complete' order.order_number %}">
+                        &nbsp;&nbsp;>>> Detail order
+                      </a>
+                    </div>
+                    <div class="card-body">
+                      <p class="card-text">
+                        <i>Orderer:</i>
+                        {{ user.first_name }} {{ user.last_name}}
+                        {% if user.phone_number %}
+                          - {{ user.phone_number }}
+                        {% endif %}
+                      </p>
+                      <p class="card-text">
+                        <i>Receiver:</i>
+                        {{ order.full_name }} - {{ order.phone_number }}
+                      </p>
+                      <p class="card-text">
+                        <i>Address:</i>
+                        {{ order.full_address }}
+                      </p>
+                      <p class="card-text">
+                        <i>Order total:</i>
+                        <b>${{ order.order_total }}</b>
+                      </p>
+                    </div>
+                </article>
+                <br />
+              {% endfor %}
+              {% endif %}
+            </main>
+        </div>
+    </div>
+</section>
+{% endblock %}

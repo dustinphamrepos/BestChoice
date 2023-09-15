@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
 from orders.forms import AddressForm
-from orders.models import Address
+from orders.models import Address, Order, OrderProduct
 from carts.models import Cart, CartItem
 from carts.views import _cart_id
 from .models import Account
@@ -194,4 +194,21 @@ def account_delete_address(request, id):
   address = Address.objects.get(id=id)
   address.delete()
   return redirect('account_address')
+
+def all_orders(request):
+  current_user = request.user
+  active = 'all_orders'
+
+  try:
+    all_orders = Order.objects.filter(user=current_user)
+  except Exception:
+    pass
+
+  context = {
+    'user': current_user,
+    'all_orders': all_orders if 'all_orders' in locals() else "",
+    'active': active
+  }
+
+  return render(request, 'accounts/all_orders.html', context=context)
   

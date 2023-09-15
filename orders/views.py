@@ -71,7 +71,9 @@ def order_complete(request, order_number):
 
   try:
     cart_items = CartItem.objects.filter(user=current_user)
-    order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
+    order = Order.objects.get(user=current_user, order_number=order_number)
+    order.is_ordered = True
+    order.save()
     for item in cart_items:
       order_product = OrderProduct()
       order_product.order_id = order.id
