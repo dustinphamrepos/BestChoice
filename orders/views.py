@@ -76,9 +76,9 @@ def order_complete(request, order_number):
     order.save()
     for item in cart_items:
       order_product = OrderProduct()
-      order_product.order_id = order.id
-      order_product.user_id = request.user.id
-      order_product.product_id = item.product.id
+      order_product.order__id = order.id
+      order_product.user__id = request.user.id
+      order_product.product__id = item.product.id
       order_product.quantity = item.quantity
       order_product.product_price = item.product.price
       order_product.ordered = True
@@ -94,7 +94,7 @@ def order_complete(request, order_number):
       product.stock -= item.quantity
       product.save()
 
-    ordered_products = OrderProduct.objects.filter(order_id=order.id)
+    ordered_products = OrderProduct.objects.filter(order__id=order.id)
 
     CartItem.objects.filter(user=request.user).delete()
 
@@ -108,6 +108,21 @@ def order_complete(request, order_number):
       'order_number': order.order_number, 
       'subtotal': subtotal,
     }
-    return render(request, 'orders/order_complete.html', context)
+    return render(request, 'orders/order_complete.html', context=context)
   except Exception:
     return redirect('order_complete')
+
+def order_received(request, order_number):
+  current_user = request.user
+  try:
+    order_received = Order.objects.get(user=current_user, order_number=order_number)
+    order_products_received = OrderProduct.objects.filter(order__id=order_received.id)
+
+    context = {
+      'order_received': order_received,
+      'order_products_received': order_products_received,
+      'order_number': order_received.order_number, 
+    }
+    return render(request, 'orders/order_received.html', context=context)
+  except Exception:
+    return redirect('home')

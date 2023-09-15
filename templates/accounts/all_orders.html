@@ -22,7 +22,7 @@
                     <div class="card-body">
                       <p class="card-text">
                         <i>Orderer:</i>
-                        {{ user.first_name }} {{ user.last_name}}
+                        {{ user.full_name }}
                         {% if user.phone_number %}
                           - {{ user.phone_number }}
                         {% endif %}
@@ -40,6 +40,11 @@
                         <b>${{ order.order_total }}</b>
                       </p>
                     </div>
+                    <a class="text-center" 
+                      href="{% url 'order_received' order.order_number %}">
+                      <button type="button" class="btn btn-success">Received</button>
+                    </a>
+                    <br />
                 </article>
                 <br />
               {% endfor %}
