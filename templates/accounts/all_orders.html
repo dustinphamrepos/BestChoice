@@ -40,10 +40,21 @@
                         <b>${{ order.order_total }}</b>
                       </p>
                     </div>
-                    <a class="text-center" 
-                      href="{% url 'order_received' order.order_number %}">
-                      <button type="button" class="btn btn-success">Received</button>
-                    </a>
+                    {% if order.status != 'Delivered' %}
+                      <a class="text-center" 
+                        href="{% url 'order_received' order.order_number %}">
+                        <button type="button" class="btn btn-success">Received</button>
+                      </a>
+                    {% else %}
+                    <p class="text-center">
+                      <a>
+                        <button type="button" class="btn btn-secondary">Received</button>
+                      </a>
+                      <a href="{% url 'order_received' order.order_number %}">
+                        <button type="button" class="btn btn-warning">Rating each product</button>
+                      </a>
+                    </p>
+                    {% endif %}
                     <br />
                 </article>
                 <br />

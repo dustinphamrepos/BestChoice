@@ -116,6 +116,8 @@ def order_received(request, order_number):
   current_user = request.user
   try:
     order_received = Order.objects.get(user=current_user, order_number=order_number)
+    order_received.status = 'Delivered'
+    order_received.save()
     order_products_received = OrderProduct.objects.filter(order__id=order_received.id)
 
     context = {
