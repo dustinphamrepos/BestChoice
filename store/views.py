@@ -35,7 +35,7 @@ def product_detail(request, category_slug, product_slug=None):
         single_product = Product.objects.get(category__slug=category_slug, slug=product_slug)
         cart = Cart.objects.get(cart_id=_cart_id(request=request))
         in_cart = CartItem.objects.filter(cart=cart, product=single_product).exists()
-    except Exception as e:
+    except Exception:
         cart = Cart.objects.create(
             cart_id=_cart_id(request)
         )
@@ -45,11 +45,20 @@ def product_detail(request, category_slug, product_slug=None):
 
     except Exception:
         order_product_to_review = None
-
-    reviews = ReviewRating.objects.filter(product_id=single_product.id, status=True)
+    try:
+        reviews = ReviewRating.objects.filter(product__id=single_product.id, status=True)
+        rating = 0
+        rating_count = 0
+        for rate in reviews:
+            rating += rate.rating
+            rating_count += 1
+        rating_average = float(rating / rating_count)
+    except Exception:
+        pass
 
     context = {
         'single_product': single_product,
+        'rating_average': rating_average if 'rating_average' in locals() else False,
         'in_cart': in_cart if 'in_cart' in locals() else False,
         'order_product_to_review': order_product_to_review,
         'product_to_review': product_to_review,

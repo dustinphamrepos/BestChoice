@@ -190,8 +190,8 @@ def account_address(request):
 
   return render(request, 'accounts/account_address.html', context=context)
 
-def account_delete_address(request, id):
-  address = Address.objects.get(id=id)
+def account_delete_address(request, address_id):
+  address = Address.objects.get(id=address_id)
   address.delete()
   return redirect('account_address')
 
@@ -211,4 +211,73 @@ def all_orders(request):
   }
 
   return render(request, 'accounts/all_orders.html', context=context)
+
+def wait_for_confirm_orders(request):
+  active = 'wait_for_confirm_orders'
+  try:
+    wait_for_confirm_orders =  Order.objects.filter(status='Wait for confirmation')
+  except Exception:
+    pass
   
+  context = {
+    'wait_for_confirm_orders': wait_for_confirm_orders,
+    'active': active
+  }
+
+  return render(request, 'accounts/wait_confirm_orders.html', context=context)
+
+def waiting_orders(request):
+  active = 'waiting_orders'
+  try:
+    waiting_orders =  Order.objects.filter(status='Waiting for delivery')
+  except Exception:
+    pass
+  
+  context = {
+    'waiting_orders': waiting_orders,
+    'active': active
+  }
+
+  return render(request, 'accounts/waiting_orders.html', context=context)
+
+def delivering_orders(request):
+  active = 'delivering_orders'
+  try:
+    delivering_orders =  Order.objects.exclude(status='Delivered')
+  except Exception:
+    pass
+  
+  context = {
+    'delivering_orders': delivering_orders,
+    'active': active
+  }
+
+  return render(request, 'accounts/delivering_orders.html', context=context)
+
+def delivered_orders(request):
+  active = 'delivered_orders'
+  try:
+    delivered_orders =  Order.objects.filter(status='Delivered')
+  except Exception:
+    pass
+  
+  context = {
+    'delivered_orders': delivered_orders,
+    'active': active
+  }
+
+  return render(request, 'accounts/delivered_orders.html', context=context)
+
+def canceled_orders(request):
+  active = 'canceled'
+  try:
+    canceled_orders =  Order.objects.filter(status='Canceled')
+  except Exception:
+    pass
+  
+  context = {
+    'canceled_orders': canceled_orders,
+    'active': active
+  }
+
+  return render(request, 'accounts/canceled_orders.html', context=context)

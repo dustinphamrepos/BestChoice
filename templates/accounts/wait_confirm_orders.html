@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="section-conten padding-y bg">
+    <div class="container">
+        {% include "includes/alerts.html" %}
+        <div class="row">
+            <aside class="col-md-4">
+                {% include "includes/account.html" %}
+            </aside>
+            <main class="col-md-8">
+              {% if wait_for_confirm_orders %}
+              {% for order in wait_for_confirm_orders %}
+                <article class="card">
+                    <div class="card-header">
+                      <b>#{{ order.order_number }}</b>
+                      <a href="{% url 'order_complete' order.order_number %}">
+                        &nbsp;&nbsp;>>> Detail order
+                      </a>
+                    </div>
+                    <div class="card-body">
+                      <p class="card-text">
+                        <i>Orderer:</i>
+                        {{ user.full_name }}
+                        {% if user.phone_number %}
+                          - {{ user.phone_number }}
+                        {% endif %}
+                      </p>
+                      <p class="card-text">
+                        <i>Receiver:</i>
+                        {{ order.full_name }} - {{ order.phone_number }}
+                      </p>
+                      <p class="card-text">
+                        <i>Address:</i>
+                        {{ order.full_address }}
+                      </p>
+                      <p class="card-text">
+                        <i>Order total:</i>
+                        <b>${{ order.order_total }}</b>
+                      </p>
+                    </div>
+                    <a class="text-center" 
+                      href="{% url 'order_received' order.order_number %}">
+                      <button type="button" class="btn btn-success">Received</button>
+                    </a>
+                    <br />
+                </article>
+                <br />
+              {% endfor %}
+              {% else %}
+              <br />
+              <h3 class='text-center'>You don't have waiting for confirmation orders.</h3>
+              {% endif %}
+            </main>
+        </div>
+    </div>
+</section>
+{% endblock %}

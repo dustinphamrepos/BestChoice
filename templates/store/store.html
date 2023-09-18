@@ -134,6 +134,17 @@
                   <div class="price-wrap mt-2">
                     <span class="price">${{ product.price }}</span>
                   </div>
+									{% if product.product_rating.rating %}
+										<div class="rating-star">
+											<span>
+													<i class="fa fa-star{% if product.product_rating.rating.average == 0.5 %}-half-o{% elif product.product_rating.rating.average < 1 %}-o {% endif %}" aria-hidden="true"></i>
+													<i class="fa fa-star{% if product.product_rating.rating.average == 1.5 %}-half-o{% elif product.product_rating.rating.average < 2 %}-o {% endif %}" aria-hidden="true"></i>
+													<i class="fa fa-star{% if product.product_rating.rating.average == 2.5 %}-half-o{% elif product.product_rating.rating.average < 3 %}-o {% endif %}" aria-hidden="true"></i>
+													<i class="fa fa-star{% if product.product_rating.rating.average == 3.5 %}-half-o{% elif product.product_rating.rating.average < 4 %}-o {% endif %}" aria-hidden="true"></i>
+													<i class="fa fa-star{% if product.product_rating.rating.average == 4.5 %}-half-o{% elif product.product_rating.rating.average < 5 %}-o {% endif %}" aria-hidden="true"></i>
+											</span>
+										</div>
+									{% endif %}
                 </div>
 								<a href="{{ product.get_url }}" class="btn btn-block btn-primary">View detail</a>
               </figcaption>
