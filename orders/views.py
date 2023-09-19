@@ -74,11 +74,13 @@ def order_complete(request, order_number):
     order = Order.objects.get(user=current_user, order_number=order_number)
     order.is_ordered = True
     order.save()
+    ordered_products = OrderProduct.objects.filter(order__id=order.id)
+
     for item in cart_items:
       order_product = OrderProduct()
-      order_product.order__id = order.id
-      order_product.user__id = request.user.id
-      order_product.product__id = item.product.id
+      order_product.order_id = order.id
+      order_product.user_id = request.user.id
+      order_product.product_id = item.product.id
       order_product.quantity = item.quantity
       order_product.product_price = item.product.price
       order_product.ordered = True
@@ -93,8 +95,6 @@ def order_complete(request, order_number):
       product = Product.objects.get(id=item.product_id)
       product.stock -= item.quantity
       product.save()
-
-    ordered_products = OrderProduct.objects.filter(order__id=order.id)
 
     CartItem.objects.filter(user=request.user).delete()
 
